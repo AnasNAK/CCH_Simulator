@@ -11,14 +11,34 @@
            http://www.springframework.org/schema/tx
            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <context:component-scan base-package="org.NAK"/>
+
+    <tx:annotation-driven/>
+
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/CCH"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value="anas" />
+    </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+    <property name="dataSource" ref="dataSource"/>
+    <property name="packagesToScan" value="org.NAK.entities"/>
+    <property name="hibernateProperties">
+       <props>
+           <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+           <prop key="hibernate.show_sql">true</prop>
+           <prop key="hibernate.format_sql">true</prop>
+           <prop key="hibernate.hbm2ddl.auto">update</prop>
+       </props>
+    </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <context:component-scan base-package="org.NAK"/>
+
 </beans>
