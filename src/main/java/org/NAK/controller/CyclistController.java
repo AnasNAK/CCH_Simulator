@@ -1,6 +1,5 @@
 package org.NAK.controller;
 
-
 import org.NAK.DTO.Cyclist.CyclistCreateDTO;
 import org.NAK.DTO.Cyclist.CyclistResponseDTO;
 import org.NAK.services.contracts.CyclistService;
@@ -23,28 +22,28 @@ public class CyclistController {
     public ResponseEntity<List<CyclistResponseDTO>> getCyclists() {
         List<CyclistResponseDTO> list = cyclistService.findAllCyclists();
         if (list.isEmpty()) {
-            ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CyclistResponseDTO> getCyclist(@PathVariable("id") Long id) {
-
         Optional<CyclistResponseDTO> responseDTO = cyclistService.findCyclistById(id);
         if (!responseDTO.isPresent()) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(responseDTO.get());
     }
 
     @PostMapping
-    public CyclistResponseDTO cyclists(@RequestBody CyclistCreateDTO cyclistCreateDTO) {
-        return cyclistService.saveCyclist(cyclistCreateDTO);
+    public ResponseEntity<CyclistResponseDTO> createCyclist(@RequestBody CyclistCreateDTO cyclistCreateDTO) {
+        CyclistResponseDTO createdCyclist = cyclistService.saveCyclist(cyclistCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCyclist);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CyclistResponseDTO> cyclistupdate(@PathVariable("id") Long id, @RequestBody CyclistCreateDTO cyclistCreateDTO) {
+    public ResponseEntity<CyclistResponseDTO> updateCyclist(@PathVariable("id") Long id, @RequestBody CyclistCreateDTO cyclistCreateDTO) {
         Optional<CyclistResponseDTO> cyclistResponseDTO = cyclistService.updateCyclist(id, cyclistCreateDTO);
         if (!cyclistResponseDTO.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -53,10 +52,10 @@ public class CyclistController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCyclist(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteCyclist(@PathVariable("id") Long id) {
         if (!cyclistService.deleteCyclist(id)) {
-            return "this is not a valid cyclist";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This is not a valid cyclist");
         }
-        return "the cyclist has been deleted";
+        return ResponseEntity.ok("The cyclist has been deleted"); 
     }
 }

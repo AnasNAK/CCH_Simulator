@@ -1,39 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/context
-           http://www.springframework.org/schema/context/spring-context.xsd
-           http://www.springframework.org/schema/tx
-           http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           https://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="org.NAK"/>
 
-    <tx:annotation-driven/>
-
-
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/CCH"/>
+        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/CCH"/>
         <property name="username" value="postgres"/>
-        <property name="password" value="anas" />
+        <property name="password" value="anas"/>
+        <property name="maximumPoolSize" value="10"/>
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-    <property name="dataSource" ref="dataSource"/>
-    <property name="packagesToScan" value="org.NAK.entities"/>
-    <property name="hibernateProperties">
-       <props>
-           <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
-           <prop key="hibernate.show_sql">true</prop>
-           <prop key="hibernate.format_sql">true</prop>
-           <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-       </props>
-    </property>
+        <property name="dataSource" ref="dataSource"/>
+        <!-- <property name="configLocation" value="classpath:hibernate.cfg.xml"/> this is for hibernate config files -->
+        <property name="packagesToScan" value="org.NAK.entities" />
+
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.use_sql_comments">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">

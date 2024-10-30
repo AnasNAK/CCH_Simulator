@@ -7,12 +7,13 @@ import org.NAK.entities.GeneralResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
 public class GeneralResultsDAOImpl extends GenericDAOImpl<GeneralResults> implements GeneralResultsDAO {
-
+    @Autowired
     public GeneralResultsDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , GeneralResults.class);
     }

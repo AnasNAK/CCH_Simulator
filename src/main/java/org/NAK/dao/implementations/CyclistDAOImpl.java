@@ -4,13 +4,14 @@ import org.NAK.dao.contracts.CyclistDAO;
 import org.NAK.entities.Cyclist;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public class CyclistDAOImpl extends GenericDAOImpl<Cyclist> implements CyclistDAO {
-
+    @Autowired
     public CyclistDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , Cyclist.class);
     }
