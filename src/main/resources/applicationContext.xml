@@ -31,13 +31,33 @@
            <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
            <prop key="hibernate.show_sql">true</prop>
            <prop key="hibernate.format_sql">true</prop>
-           <prop key="hibernate.hbm2ddl.auto">update</prop>
+           <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
        </props>
     </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="competitionDAOImpl" class="org.NAK.dao.implementations.CompetitionDAOImpl">
+        <constructor-arg ref="sessionFactory" />
+    </bean>
+
+    <bean id="teamDAOImpl" class="org.NAK.dao.implementations.TeamDAOImpl">
+        <constructor-arg ref="sessionFactory" />
+    </bean>
+
+    <bean id="cyclistDAOImpl" class="org.NAK.dao.implementations.CyclistDAOImpl">
+        <constructor-arg ref="sessionFactory" />
+    </bean>
+
+    <bean id="generalResultsDAOImpl" class="org.NAK.dao.implementations.GeneralResultsDAOImpl">
+        <constructor-arg ref="sessionFactory" />
+    </bean>
+
+    <bean id="stagesResultsDAOImpl" class="org.NAK.dao.implementations.StagesResultsDAOImpl">
+        <constructor-arg ref="sessionFactory"/>
     </bean>
 
 
