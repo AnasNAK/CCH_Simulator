@@ -145,6 +145,19 @@ class CyclistServiceImplTest {
 
 
     }
+    @Test
+    void deleteCyclist_WithInvalidId_ThrowsEntityNotFoundException() {
+        Long cyclistId = 1L;
+        Cyclist cyclist = new Cyclist();
+
+        when(cyclistDAO.findById(cyclistId)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(EntityNotFoundException.class , ()->{
+            cyclistServiceImpl.deleteCyclist(cyclistId);
+        });
+
+        assertEquals("Cyclist Not Found", exception.getMessage());
+        verify(cyclistDAO, never()).delete(any());
+    }
 
     @Test
     void findCyclistById_WithExistingId_ReturnsCyclistResponseDTO() {
@@ -173,8 +186,6 @@ class CyclistServiceImplTest {
 
         verify(cyclistDAO).findById(cyclistId);
     }
-
-
 
 
 

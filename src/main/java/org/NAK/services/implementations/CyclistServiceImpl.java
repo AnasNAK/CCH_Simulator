@@ -75,8 +75,12 @@ public class CyclistServiceImpl implements CyclistService {
     public boolean deleteCyclist(Long id) {
         Optional<Cyclist> cyclistOptional = cyclistDAO.findById(id);
 
-        cyclistDAO.delete(cyclistOptional.get());
-        return true;
+        if (cyclistOptional.isPresent()) {
+            cyclistDAO.delete(cyclistOptional.get());
+            return true;
+        } else {
+            throw new EntityNotFoundException("Cyclist Not Found");
+        }
     }
 
     @Override
