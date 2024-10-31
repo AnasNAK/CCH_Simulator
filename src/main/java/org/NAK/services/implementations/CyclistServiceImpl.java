@@ -37,27 +37,24 @@ public class CyclistServiceImpl implements CyclistService {
 
     @Override
     public CyclistResponseDTO saveCyclist(CyclistCreateDTO cyclistCreateDTO) {
-        // change it from DTO to Entity
         Cyclist cyclist = cyclistmapper.toEntity(cyclistCreateDTO);
-        //get team
+
         Team team = teamDAO.findById(cyclist.getTeam().getId()).orElseThrow(() -> new EntityNotFoundException("Team Not Found"));
-        //set the team
         cyclist.setTeam(team);
-        //save it
+
         Cyclist savedCyclist = cyclistDAO.save(cyclist).orElseThrow(() -> new EntityNotFoundException("Error saving the Cyclist"));
+
         return cyclistmapper.toResponseDto(savedCyclist);
     }
+
 
     @Override
     public Optional<CyclistResponseDTO> updateCyclist(Long id , CyclistCreateDTO cyclistCreateDTO) {
 
-        //check if the cyclist exist
         Cyclist existednCyclist = cyclistDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Cyclist Not Found"));
-        //change Updated Cyclist to ENtity
         Cyclist updatedCyclist = cyclistmapper.toEntity(cyclistCreateDTO);
         updatedCyclist.setId(id);
 
-        //update team if necessary
         if(cyclistCreateDTO.getTeamId() != null){
             Team team = teamDAO.findById(cyclistCreateDTO.getTeamId()).orElseThrow(() -> new EntityNotFoundException("Team Not Found"));
             updatedCyclist.setTeam(team);
@@ -65,9 +62,7 @@ public class CyclistServiceImpl implements CyclistService {
             updatedCyclist.setTeam(existednCyclist.getTeam());
         }
 
-        //update the cyclist
         Cyclist savedCyclist = cyclistDAO.update(updatedCyclist).orElseThrow(() -> new RuntimeException("Failed to update the Cyclist"));
-        //return the team
         return Optional.of(cyclistmapper.toResponseDto(savedCyclist));
     }
 
@@ -79,16 +74,16 @@ public class CyclistServiceImpl implements CyclistService {
     @Override
     public boolean deleteCyclist(Long id) {
         Optional<Cyclist> cyclistOptional = cyclistDAO.findById(id);
-//        if(!cyclistOptional.isPresent()) {
-//            throw  new EntityNotFoundException("Cyclist not found");
-//        }
+
         cyclistDAO.delete(cyclistOptional.get());
         return true;
     }
 
     @Override
     public Optional<CyclistResponseDTO> findCyclistById(Long id) {
-        Optional<Cyclist> cyclist = cyclistDAO.findById(id);
-        return Optional.of(cyclistmapper.toResponseDto(cyclist.get()));
+        return cyclistDAO.findById(id)
+                .map(cyclistmapper::toResponseDto);
     }
+
+
 }
