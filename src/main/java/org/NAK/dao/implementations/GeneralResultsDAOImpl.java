@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public class GeneralResultsDAOImpl extends GenericDAOImpl<GeneralResults> implements GeneralResultsDAO {
-    @Autowired
     public GeneralResultsDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , GeneralResults.class);
     }

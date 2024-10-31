@@ -1,5 +1,6 @@
 package org.NAK.controller;
 
+import jakarta.validation.Valid;
 import org.NAK.DTO.Cyclist.CyclistCreateDTO;
 import org.NAK.DTO.Cyclist.CyclistResponseDTO;
 import org.NAK.services.contracts.CyclistService;
@@ -37,7 +38,7 @@ public class CyclistController {
     }
 
     @PostMapping
-    public ResponseEntity<CyclistResponseDTO> createCyclist(@RequestBody CyclistCreateDTO cyclistCreateDTO) {
+    public ResponseEntity<CyclistResponseDTO> createCyclist(@RequestBody @Valid CyclistCreateDTO cyclistCreateDTO) {
         CyclistResponseDTO createdCyclist = cyclistService.saveCyclist(cyclistCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCyclist);
     }
@@ -56,6 +57,11 @@ public class CyclistController {
         if (!cyclistService.deleteCyclist(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This is not a valid cyclist");
         }
-        return ResponseEntity.ok("The cyclist has been deleted"); 
+        return ResponseEntity.ok("The cyclist has been deleted");
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }

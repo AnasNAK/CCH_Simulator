@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public class CyclistDAOImpl extends GenericDAOImpl<Cyclist> implements CyclistDAO {
-    @Autowired
     public CyclistDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , Cyclist.class);
     }

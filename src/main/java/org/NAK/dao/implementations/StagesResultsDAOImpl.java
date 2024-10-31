@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public class StagesResultsDAOImpl extends GenericDAOImpl<StagesResults> implements StagesResultsDAO {
-    @Autowired
     public StagesResultsDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , StagesResults.class);
     }

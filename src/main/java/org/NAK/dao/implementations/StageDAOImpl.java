@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class StageDAOImpl extends GenericDAOImpl<Stage> implements StageDAO {
 
-    @Autowired
+
     public StageDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , Stage.class);
     }

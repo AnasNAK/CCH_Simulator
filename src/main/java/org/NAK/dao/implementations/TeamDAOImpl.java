@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TeamDAOImpl extends GenericDAOImpl<Team> implements TeamDAO {
 
-    @Autowired
+
     public TeamDAOImpl(SessionFactory sessionFactory) {
         super(sessionFactory , Team.class);
     }

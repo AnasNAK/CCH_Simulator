@@ -6,113 +6,79 @@ import org.NAK.dao.contracts.GenericDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
-
-@Setter
 @Getter
+@Setter
 public class GenericDAOImpl<T> implements GenericDAO<T> {
 
-
-    private SessionFactory sessionFactory;
-
+    private static final Logger logger = LoggerFactory.getLogger(GenericDAOImpl.class);
+    private final SessionFactory sessionFactory;
     private final Class<T> classGeneric;
 
-
-    public GenericDAOImpl(SessionFactory sessionFactory ,  Class<T> classGeneric) {
+    public GenericDAOImpl(SessionFactory sessionFactory, Class<T> classGeneric) {
         this.classGeneric = classGeneric;
         this.sessionFactory = sessionFactory;
     }
 
     @Override
     public Optional<T> save(T entity) {
-        Transaction transaction = null;
-        Session session = sessionFactory.openSession();
-        try{
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.persist(entity);
             transaction.commit();
             return Optional.of(entity);
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()){
-                transaction.rollback();
-            }
-            e.printStackTrace();
+            logger.error("Error occurred while saving entity", e);
             return Optional.empty();
-        }finally {
-            session.close();
         }
     }
 
     @Override
     public Optional<T> update(T entity) {
-        Transaction transaction = null;
-        Session session = sessionFactory.openSession();
-        try {
-            transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.merge(entity);
             transaction.commit();
             return Optional.of(entity);
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            logger.error("Error occurred while updating entity", e);
             return Optional.empty();
-        }finally {
-            session.close();
         }
     }
 
     @Override
     public List<T> findAll() {
-        Session session = sessionFactory.openSession();
-        try{
-            session.beginTransaction();
-            return session.createQuery("from "+classGeneric.getName() , classGeneric).list();
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("from " + classGeneric.getName(), classGeneric).list();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error occurred while retrieving all entities", e);
             return List.of();
-        }finally {
-            session.close();
         }
     }
 
     @Override
     public void delete(T entity) {
-        Transaction transaction = null;
-        Session session = sessionFactory.openSession();
-        try{
-            transaction = session.getTransaction();
-            transaction.begin();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.remove(entity);
             transaction.commit();
-        }catch (Exception e){
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }finally {
-            session.close();
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting entity", e);
         }
     }
 
     @Override
     public Optional<T> findById(Long id) {
-        Transaction transaction = null;
-        Session session = sessionFactory.openSession();
-        try{
-            transaction = session.beginTransaction();
-            T fake = session.find(classGeneric , id);
-            transaction.commit();
-            return Optional.ofNullable(fake);
-        }catch(Exception e){
-            if(transaction != null) transaction.rollback();
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            return Optional.ofNullable(session.find(classGeneric, id));
+        } catch (Exception e) {
+            logger.error("Error occurred while finding entity by ID", e);
             return Optional.empty();
-        }finally {
-            session.close();
         }
     }
-
-
-
 }
