@@ -61,12 +61,10 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamResponseDTO updateTeam(Long id , TeamCreateDTO teamCreateDTO) {
-        //make entity from the dto create
 
 
-        //find team in database
         Team existedTeam = teamDAO.findById(id).orElseThrow(() -> new EntityNotFoundException("Team Not found"));
-        //to entity
+        
         Team team = teamMapper.toEntity(teamCreateDTO);
         team.setId(id);
 
